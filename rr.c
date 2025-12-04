@@ -1,7 +1,7 @@
 #include <stdio.h>
 
-#define MAX 20   // max.processes, mojno uvelichit
-#define QUANTUM 3 // жестко заданный квант времени;mojno menyat
+#define MAX 20  
+#define QUANTUM 3
 //structure to store process info
 typedef struct {
     int pid;
@@ -36,7 +36,7 @@ int q_full(Queue *q) {
 // помещаем pid в хвост очереди, add elem to the queue
 void q_push(Queue *q, int pid) {
     if (q_full(q)) {
-        //В учебной версии(ignoring simple ver)просто игнорируем (в реале надо обработать)
+        //ignoring simple ver в реале надо обработать
         return;
     }
     q->data[q->tail] = pid;
@@ -44,7 +44,7 @@ void q_push(Queue *q, int pid) {
     q->size++;
 }
 
-// извлекаем pid из головы очереди, возвращаем -1 если пусто
+// извлекаем pid из головs очереди, возвращаем -1 если пусто
 //remove n return the front el
 int q_pop(Queue *q) {
     if (q_empty(q)) return -1;
@@ -93,7 +93,7 @@ int main() {
     // это нужно, чтобы не добавлять один и тот же процесс несколько раз
     int in_ready[MAX] = {0};
 
-    int time = 0;        // текущий момент "симуляции" (в тиках),simulat clock
+    int time = 0;        // simulat clock
     int finished = 0;    // сколько процессов завершено
 
     printf("\n--- Simulation trace ---\n");
@@ -102,7 +102,7 @@ int main() {
     //main loop
     while (finished < n) {
 
-        // 1)Добавляем в очередь все процессы, у которых arrival <= time и которые еще не завершены
+        // 1Добавляем в очередь все процессы, у которых arrival <= time и которые еще не завершены
         //    и пока не в очереди.
         for (int i = 0; i < n; i++) {
             if (proc[i].arrival <= time && proc[i].remaining > 0 && !in_ready[i]) {
@@ -118,22 +118,22 @@ int main() {
             continue;
         }
 
-        // 3 Берём процесс из очереди киеуе (по принципу FIFO)
+        // 3Берём процесс из очереди киеуе (по принципу FIFO)
         int pid = q_pop(&ready);
         in_ready[pid] = 0; //allow process to be added later
 
-        // Печать для наглядности: какой процесс сейчас использует CPU
+        // 4Печать для наглядности: какой процесс сейчас использует CPU
         printf("Time %2d: Running P%d (remaining before = %d)\n", 
             time, pid, proc[pid].remaining);
 
-        // execute for quantum or until proces finishes
+        // 5execute for quantum or until proces finishes
         int qtime = QUANTUM;
         if (proc[pid].remaining < qtime) qtime = proc[pid].remaining;
 
         proc[pid].remaining -= qtime;
         time += qtime; // advance clock
 
-        // 5) Проверяем завершение
+        // 5 Проверяем завершение
         if (proc[pid].remaining == 0) {
             proc[pid].completion = time;
             finished++;
